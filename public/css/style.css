@@ -1,0 +1,83 @@
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; }
+
+/* Carousel slide */
+.car-slide {
+  flex: 0 0 100%;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #fdf8f4;
+}
+.car-slide img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center;
+}
+.car-slide .caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 2.5rem 2rem 2rem;
+  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));
+  color: white;
+}
+
+/* Card hover lift */
+.product-card {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 50px -12px rgba(207, 90, 120, 0.25);
+}
+.product-card .img-wrap {
+  overflow: hidden;
+}
+.product-card .img-wrap img {
+  transition: transform .7s cubic-bezier(.2,.8,.2,1);
+}
+.product-card:hover .img-wrap img {
+  transform: scale(1.06);
+}
+
+/* Sold-out ribbon */
+.ribbon {
+  position: absolute; top: 14px; left: -34px;
+  transform: rotate(-30deg);
+  background: #a07186; color: white;
+  padding: 4px 40px; font-size: 11px; letter-spacing: .15em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+/* Category chip */
+.chip {
+  padding: .55rem 1.25rem; border-radius: 999px;
+  background: white; color: #a07186;
+  border: 1px solid #fcd2dc;
+  font-size: .85rem; font-weight: 500;
+  cursor: pointer; transition: all .25s;
+}
+.chip:hover { background: #ffe8ee; }
+.chip.active {
+  background: linear-gradient(135deg, #f298ae, #cf5a78);
+  color: white; border-color: transparent;
+  box-shadow: 0 8px 20px -6px rgba(207,90,120,.5);
+}
+
+/* Carousel dots */
+.dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: rgba(255,255,255,.5); transition: all .3s; cursor: pointer;
+}
+.dot.active { width: 24px; background: white; }
+
+/* Subtle float for hero pulse dot */
+@keyframes floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+.floaty { animation: floaty 4s ease-in-out infinite; }
+
+/* WA panel slide */
+#wa-panel {
+  transform-origin: bottom right;
+  animation: pop .25s ease-out;
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(.85) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}

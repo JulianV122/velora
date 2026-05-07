@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Velora · Admin</title>
+  <link rel="icon" href="/LogoVelora.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Dancing+Script:wght@600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          blush: { 50:'#fff5f7', 100:'#ffe8ee', 200:'#fcd2dc', 300:'#f8b8c8', 400:'#f298ae', 500:'#e87794', 600:'#cf5a78' },
+          cream: '#fdf8f4', mauve: '#a07186'
+        },
+        fontFamily: { serif: ['"Cormorant Garamond"','serif'], script:['"Dancing Script"','cursive'], sans:['Inter','sans-serif'] }
+      }}
+    }
+  </script>
+</head>
+<body class="bg-cream text-stone-700 font-sans min-h-screen">
+
+  <!-- LOGIN -->
+  <div id="login-view" class="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-blush-100 via-cream to-blush-50">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-blush-200/40 p-8">
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <img src="/LogoVelora.jpeg" class="w-14 h-14 rounded-full ring-2 ring-blush-200" />
+        <div>
+          <div class="font-serif text-3xl text-mauve leading-none">Velora</div>
+          <div class="font-script text-blush-500 -mt-1">admin panel</div>
+        </div>
+      </div>
+      <h1 class="text-center text-stone-500 text-sm mb-6">Inicia sesión para administrar tus productos</h1>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="text-xs uppercase tracking-widest text-stone-400">Usuario</label>
+          <input id="li-user" type="text" required autocomplete="username"
+            class="w-full mt-1 px-4 py-3 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300" />
+        </div>
+        <div>
+          <label class="text-xs uppercase tracking-widest text-stone-400">Contraseña</label>
+          <input id="li-pass" type="password" required autocomplete="current-password"
+            class="w-full mt-1 px-4 py-3 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300" />
+        </div>
+        <p id="li-err" class="hidden text-sm text-red-500"></p>
+        <button class="w-full py-3 rounded-xl bg-blush-400 hover:bg-blush-500 text-white font-medium shadow-lg shadow-blush-300/40 transition">
+          Entrar
+        </button>
+      </form>
+      <p class="mt-6 text-center text-xs text-stone-400">
+        <a href="/" class="hover:text-mauve">← Volver a la tienda</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dash-view" class="hidden">
+    <header class="bg-white/80 backdrop-blur border-b border-blush-100 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="/LogoVelora.jpeg" class="w-10 h-10 rounded-full ring-2 ring-blush-200" />
+          <div class="leading-tight">
+            <div class="font-serif text-2xl text-mauve">Velora</div>
+            <div class="font-script text-blush-500 text-xs -mt-1">panel admin</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <span class="text-stone-500 hidden sm:inline">Hola, <span id="who" class="text-mauve font-medium"></span></span>
+          <a href="/" class="px-4 py-2 rounded-full text-mauve hover:bg-blush-50 transition">Ver tienda</a>
+          <button id="logout" class="px-4 py-2 rounded-full bg-blush-100 hover:bg-blush-200 text-mauve transition">Salir</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h1 class="font-serif text-4xl text-mauve">Productos</h1>
+          <p class="text-stone-500">Crea, edita y administra tu catálogo.</p>
+        </div>
+        <button id="btn-new" class="px-6 py-3 rounded-full bg-blush-400 hover:bg-blush-500 text-white font-medium shadow-lg shadow-blush-300/40 transition self-start md:self-auto">
+          + Nuevo producto
+        </button>
+      </div>
+
+      <!-- stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-2xl p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-stone-400">Total</p>
+          <p id="stat-total" class="font-serif text-3xl text-mauve mt-1">0</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-stone-400">Disponibles</p>
+          <p id="stat-avail" class="font-serif text-3xl text-mauve mt-1">0</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-stone-400">Destacados</p>
+          <p id="stat-feat" class="font-serif text-3xl text-mauve mt-1">0</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm">
+          <p class="text-xs uppercase tracking-widest text-stone-400">Categorías</p>
+          <p id="stat-cats" class="font-serif text-3xl text-mauve mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="bg-white rounded-2xl shadow-md shadow-blush-200/20 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-blush-50 text-stone-500 text-left">
+              <tr>
+                <th class="px-4 py-3">Imagen</th>
+                <th class="px-4 py-3">Nombre</th>
+                <th class="px-4 py-3">Categoría</th>
+                <th class="px-4 py-3">Precio</th>
+                <th class="px-4 py-3 text-center">Disp.</th>
+                <th class="px-4 py-3 text-center">Dest.</th>
+                <th class="px-4 py-3"></th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+      <div class="px-6 py-5 border-b border-blush-100 flex items-center justify-between">
+        <h3 id="modal-title" class="font-serif text-2xl text-mauve">Nuevo producto</h3>
+        <button id="modal-close" class="text-stone-400 hover:text-mauve text-2xl leading-none">×</button>
+      </div>
+      <form id="prod-form" class="p-6 space-y-5">
+        <input type="hidden" id="f-id" />
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs uppercase tracking-widest text-stone-400">Nombre *</label>
+            <input id="f-name" required class="w-full mt-1 px-4 py-2.5 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300" />
+          </div>
+          <div>
+            <label class="text-xs uppercase tracking-widest text-stone-400">Categoría *</label>
+            <input id="f-category" required list="cat-list" placeholder="Moños, Scrunchies..." class="w-full mt-1 px-4 py-2.5 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300" />
+            <datalist id="cat-list">
+              <option value="Moños"><option value="Scrunchies"><option value="Pijamas de satín">
+              <option value="Gorros de satín"><option value="Tubos para ondas"><option value="Balacas">
+              <option value="Ropa interior"><option value="Batas de pijama">
+            </datalist>
+          </div>
+          <div>
+            <label class="text-xs uppercase tracking-widest text-stone-400">Precio (COP) *</label>
+            <input id="f-price" type="number" min="0" step="500" required class="w-full mt-1 px-4 py-2.5 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300" />
+          </div>
+          <div class="flex items-center gap-6 pt-6">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="f-available" type="checkbox" checked class="w-5 h-5 accent-blush-500" />
+              <span class="text-sm">Disponible</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="f-featured" type="checkbox" class="w-5 h-5 accent-blush-500" />
+              <span class="text-sm">Destacado</span>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs uppercase tracking-widest text-stone-400">Descripción</label>
+          <textarea id="f-description" rows="3" class="w-full mt-1 px-4 py-2.5 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300"></textarea>
+        </div>
+        <div>
+          <label class="text-xs uppercase tracking-widest text-stone-400">Imagen</label>
+          <div class="mt-1 flex items-center gap-4">
+            <img id="f-preview" class="w-24 h-24 rounded-xl object-cover bg-blush-50 ring-1 ring-blush-100" />
+            <input id="f-image" type="file" accept="image/*" class="block text-sm text-stone-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blush-100 file:text-mauve hover:file:bg-blush-200" />
+          </div>
+          <p class="text-xs text-stone-400 mt-2">Formatos: JPG, PNG, WEBP · máx 5 MB · si editas y no eliges nueva, se conserva la actual.</p>
+        </div>
+        <p id="f-err" class="hidden text-sm text-red-500"></p>
+        <div class="flex justify-end gap-3 pt-2 border-t border-blush-100">
+          <button type="button" id="cancel" class="px-5 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 transition">Cancelar</button>
+          <button id="save" class="px-6 py-2.5 rounded-full bg-blush-400 hover:bg-blush-500 text-white font-medium shadow-lg shadow-blush-300/40 transition">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="hidden fixed top-6 right-6 z-50 bg-white rounded-xl shadow-xl border border-blush-100 px-5 py-3 text-sm text-mauve"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

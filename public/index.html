@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora · by Vanessa Vallejo</title>
+  <meta name="description" content="Velora — Moños, scrunchies, pijamas de satín, gorros, balacas y más. Belleza y suavidad en cada detalle." />
+  <link rel="icon" href="/LogoVelora.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blush: { 50:'#fff5f7', 100:'#ffe8ee', 200:'#fcd2dc', 300:'#f8b8c8', 400:'#f298ae', 500:'#e87794', 600:'#cf5a78' },
+            cream: '#fdf8f4',
+            mauve: '#a07186',
+            gold:  '#c9a96e'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            script: ['"Dancing Script"', 'cursive'],
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-cream text-stone-700 font-sans antialiased">
+
+  <!-- NAVBAR -->
+  <nav id="nav" class="fixed top-0 inset-x-0 z-40 transition-all duration-500 backdrop-blur-md bg-white/40 border-b border-blush-100/50">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="#hero" class="flex items-center gap-3">
+        <img src="/LogoVelora.jpeg" alt="Velora" class="w-10 h-10 rounded-full object-cover ring-2 ring-blush-200 shadow-sm" />
+        <div class="leading-tight">
+          <div class="font-serif text-2xl text-mauve">Velora</div>
+          <div class="font-script text-blush-500 text-xs -mt-1">by vanessa vallejo</div>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm tracking-wide">
+        <a href="#productos" class="hover:text-blush-500 transition">Productos</a>
+        <a href="#categorias" class="hover:text-blush-500 transition">Categorías</a>
+        <a href="#instagram" class="hover:text-blush-500 transition">Instagram</a>
+        <a href="/admin.html" class="text-stone-400 hover:text-mauve transition text-xs">Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- decorative background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blush-100 via-cream to-blush-50"></div>
+    <div class="absolute -top-32 -right-32 w-[28rem] h-[28rem] rounded-full bg-blush-200/40 blur-3xl"></div>
+    <div class="absolute -bottom-32 -left-32 w-[32rem] h-[32rem] rounded-full bg-blush-300/30 blur-3xl"></div>
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image:radial-gradient(#cf5a78 1px, transparent 1px); background-size:24px 24px;"></div>
+
+    <div class="relative max-w-6xl mx-auto px-6 text-center pt-24 pb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 border border-blush-200 text-xs tracking-[0.2em] text-mauve uppercase mb-8 shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-blush-400 animate-pulse"></span>
+        Nueva colección · 2026
+      </div>
+
+      <div class="flex items-center justify-center gap-4 md:gap-6 mb-2">
+        <img src="/LogoVelora.jpeg" alt="Logo Velora" class="hidden sm:block w-20 h-20 md:w-28 md:h-28 rounded-full object-cover ring-4 ring-white shadow-xl" />
+        <h1 class="font-serif font-medium text-mauve flex items-baseline gap-3 md:gap-5">
+          <span class="text-7xl md:text-9xl tracking-tight">Velora</span>
+          <span class="font-script text-blush-500 text-2xl md:text-4xl -translate-y-2 md:-translate-y-4">by vanessa vallejo</span>
+        </h1>
+      </div>
+
+      <p class="mt-6 max-w-2xl mx-auto text-stone-600 text-lg md:text-xl leading-relaxed">
+        Belleza, suavidad y detalle en cada pieza.<br class="hidden md:block" />
+        Moños, satín y todo lo que te hace sentir <em class="text-blush-500 not-italic font-medium">única</em>.
+      </p>
+
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#productos" class="px-8 py-3.5 rounded-full bg-blush-400 hover:bg-blush-500 text-white font-medium shadow-lg shadow-blush-300/40 transition-all hover:-translate-y-0.5">
+          Ver productos
+        </a>
+        <a id="hero-wa" href="#" target="_blank" class="px-8 py-3.5 rounded-full bg-white/80 border border-blush-200 hover:bg-white text-mauve font-medium shadow-sm transition-all hover:-translate-y-0.5">
+          Hablar por WhatsApp
+        </a>
+      </div>
+
+      <a href="#carrusel" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-blush-400 animate-bounce">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- CARRUSEL DESTACADOS -->
+  <section id="carrusel" class="py-20 bg-cream">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <p class="font-script text-blush-500 text-2xl">— destacados —</p>
+        <h2 class="font-serif text-4xl md:text-5xl text-mauve mt-1">Lo más amado</h2>
+      </div>
+
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-blush-200/50 bg-white">
+        <div id="carousel-track" class="flex transition-transform duration-700 ease-out"></div>
+
+        <button id="car-prev" aria-label="Anterior" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-mauve shadow-lg flex items-center justify-center transition">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button id="car-next" aria-label="Siguiente" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-mauve shadow-lg flex items-center justify-center transition">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        <div id="car-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORÍAS -->
+  <section id="categorias" class="py-20 bg-gradient-to-b from-cream to-blush-50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <p class="font-script text-blush-500 text-2xl">— explora —</p>
+        <h2 class="font-serif text-4xl md:text-5xl text-mauve mt-1">Categorías</h2>
+      </div>
+      <div id="cat-chips" class="flex flex-wrap gap-3 justify-center"></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <section id="productos" class="py-16 bg-blush-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <p class="font-script text-blush-500 text-2xl">— catálogo —</p>
+        <h2 class="font-serif text-4xl md:text-5xl text-mauve mt-1">Nuestros productos</h2>
+      </div>
+      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7"></div>
+      <p id="empty" class="hidden text-center text-stone-500 mt-12">No hay productos en esta categoría todavía.</p>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section id="instagram" class="py-24 bg-gradient-to-br from-blush-100 via-cream to-blush-200 relative overflow-hidden">
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blush-300/30 blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-blush-400/20 blur-3xl"></div>
+    <div class="relative max-w-3xl mx-auto px-6 text-center">
+      <div class="inline-flex w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-400 via-rose-400 to-fuchsia-500 items-center justify-center shadow-xl mb-6">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="white"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.3 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .3 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.3-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.3-2.1-.3C15.5 4 15.1 4 12 4zm0 3.1a4.9 4.9 0 110 9.8 4.9 4.9 0 010-9.8zm0 8.1a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zm5.1-8.3a1.15 1.15 0 110-2.3 1.15 1.15 0 010 2.3z"/></svg>
+      </div>
+      <h2 class="font-serif text-4xl md:text-5xl text-mauve">Síguenos en Instagram</h2>
+      <p class="mt-3 font-script text-2xl text-blush-500">@byvelora_____</p>
+      <p class="mt-4 text-stone-600 max-w-xl mx-auto">Mira las novedades, los detrás de cámara y todo lo que estamos creando para ti.</p>
+      <a href="https://instagram.com/byvelora_____" target="_blank" rel="noopener" class="mt-8 inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-fuchsia-500 text-white font-medium shadow-lg shadow-pink-300/50 hover:-translate-y-0.5 transition">
+        Ir a Instagram
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-mauve/95 text-blush-100 py-12">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 items-center">
+      <div class="flex items-center gap-3">
+        <img src="/LogoVelora.jpeg" class="w-12 h-12 rounded-full ring-2 ring-blush-200" />
+        <div>
+          <div class="font-serif text-2xl">Velora</div>
+          <div class="font-script text-blush-200 text-sm -mt-1">by vanessa vallejo</div>
+        </div>
+      </div>
+      <div class="text-center text-sm">
+        <p>Hecho con amor en Colombia 🤍</p>
+        <p class="opacity-70 mt-1">© <span id="year"></span> Velora. Todos los derechos reservados.</p>
+      </div>
+      <div class="flex md:justify-end gap-4">
+        <a href="https://instagram.com/byvelora_____" target="_blank" class="hover:text-white transition">Instagram</a>
+        <a id="footer-wa" href="#" target="_blank" class="hover:text-white transition">WhatsApp</a>
+        <a href="/admin.html" class="opacity-50 hover:opacity-100 transition text-xs self-center">Admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FLOATING BUBBLE -->
+  <div id="wa-bubble" class="fixed bottom-6 right-6 z-50">
+    <button id="wa-toggle" aria-label="Abrir chat" class="group w-16 h-16 rounded-full bg-[#25D366] text-white shadow-2xl shadow-green-500/40 flex items-center justify-center hover:scale-105 transition-transform relative">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M20.5 3.5A11 11 0 003.6 17.3L2 22l4.8-1.6a11 11 0 0013.7-16.9zM12 20.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-2.8.9.9-2.7-.2-.3a8.3 8.3 0 1112.7-1.4 8.2 8.2 0 01-6.1 4.9zm4.7-6.2c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.7.8-.8 1-.2.1-.3.2-.5 0-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.5-1.5-1.8-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.3 0-.5l-.7-1.7c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2 0 1.3.9 2.6 1.1 2.7.1.2 1.9 2.9 4.6 4 1.6.7 2.2.7 3 .6.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.5-.3z"/></svg>
+      <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] flex items-center justify-center font-bold">1</span>
+    </button>
+
+    <div id="wa-panel" class="hidden absolute bottom-20 right-0 w-80 bg-white rounded-2xl shadow-2xl border border-stone-100 overflow-hidden">
+      <div class="bg-[#075E54] text-white p-4 flex items-center gap-3">
+        <img src="/LogoVelora.jpeg" class="w-10 h-10 rounded-full ring-2 ring-white/30" />
+        <div>
+          <div class="font-medium">Velora</div>
+          <div class="text-xs opacity-80">Normalmente responde rápido</div>
+        </div>
+      </div>
+      <div class="p-4 bg-[#ECE5DD] min-h-[120px]">
+        <div class="bg-white rounded-lg p-3 text-sm text-stone-700 shadow-sm w-fit">
+          ¡Hola! 🤍 Cuéntanos cómo podemos ayudarte.
+        </div>
+      </div>
+      <form id="wa-form" class="p-3 bg-white flex gap-2">
+        <input id="wa-msg" type="text" placeholder="Escribe un mensaje..." class="flex-1 px-3 py-2 rounded-full bg-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-blush-300" />
+        <button type="submit" class="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:bg-green-500 transition">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
