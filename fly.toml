@@ -1,6 +1,6 @@
 # Edita "app" después de correr `fly launch` o pon aquí el nombre que quieras
 app = "velora"
-primary_region = "bog"   # Bogotá. Otras opciones cercanas: "mia" (Miami), "gru" (São Paulo)
+primary_region = "iad"   # Ashburn, Virginia — la más cercana a Colombia disponible
 
 [build]
 
