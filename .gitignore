@@ -3,3 +3,5 @@ data/
 *.log
 .env
 .DS_Store
+
+JWT_SECRET=r0>JTD|yaKI<{0<(#_1*en$j#y77]|LhiA?^-69-O{b9:"S!<Ca`4H6/WnsU
