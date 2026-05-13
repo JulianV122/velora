@@ -171,12 +171,16 @@
           <textarea id="f-description" rows="3" class="w-full mt-1 px-4 py-2.5 rounded-xl bg-blush-50 border border-blush-100 focus:outline-none focus:ring-2 focus:ring-blush-300"></textarea>
         </div>
         <div>
-          <label class="text-xs uppercase tracking-widest text-stone-400">Imagen</label>
-          <div class="mt-1 flex items-center gap-4">
-            <img id="f-preview" class="w-24 h-24 rounded-xl object-cover bg-blush-50 ring-1 ring-blush-100" />
-            <input id="f-image" type="file" accept="image/*" class="block text-sm text-stone-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blush-100 file:text-mauve hover:file:bg-blush-200" />
+          <label class="text-xs uppercase tracking-widest text-stone-400">Imágenes (hasta 10)</label>
+          <div id="f-previews" class="mt-2 flex flex-wrap gap-2 min-h-[6rem] p-2 rounded-xl bg-blush-50 border border-blush-100"></div>
+          <div class="mt-3">
+            <label for="f-image" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blush-100 hover:bg-blush-200 text-mauve text-sm cursor-pointer transition">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Añadir imágenes
+            </label>
+            <input id="f-image" type="file" accept="image/*" multiple class="hidden" />
           </div>
-          <p class="text-xs text-stone-400 mt-2">Formatos: JPG, PNG, WEBP · máx 5 MB · si editas y no eliges nueva, se conserva la actual.</p>
+          <p class="text-xs text-stone-400 mt-2">JPG, PNG, WEBP · máx 5 MB c/u · la primera imagen será la <strong>portada</strong>. Click en × para eliminar.</p>
         </div>
         <p id="f-err" class="hidden text-sm text-red-500"></p>
         <div class="flex justify-end gap-3 pt-2 border-t border-blush-100">

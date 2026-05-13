@@ -22,11 +22,25 @@ db.exec(`
     price REAL NOT NULL,
     description TEXT DEFAULT '',
     image TEXT NOT NULL,
+    images TEXT,
     available INTEGER NOT NULL DEFAULT 1,
     featured INTEGER NOT NULL DEFAULT 0,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   );
 `);
+
+// Migración: si la BD venía de antes sin columna `images`, agregarla
+const cols = db.prepare("PRAGMA table_info(products)").all().map(c => c.name);
+if (!cols.includes('images')) {
+  db.exec("ALTER TABLE products ADD COLUMN images TEXT");
+  console.log('[migrate] columna `images` añadida');
+}
+// Backfill: rellenar `images` con [image] donde aún sea NULL
+const backfilled = db.prepare(`
+  UPDATE products SET images = '["' || replace(image, '"', '\\"') || '"]'
+  WHERE images IS NULL OR images = ''
+`).run();
+if (backfilled.changes > 0) console.log(`[migrate] ${backfilled.changes} productos migrados a array de imágenes`);
 
 // Seed default admin
 const userCount = db.prepare('SELECT COUNT(*) as c FROM users').get().c;
@@ -45,16 +59,18 @@ if (productCount === 0) {
     'Moños', 'Scrunchies'
   ];
   const insert = db.prepare(`
-    INSERT INTO products (name, category, price, description, image, available, featured)
-    VALUES (?, ?, ?, ?, ?, 1, ?)
+    INSERT INTO products (name, category, price, description, image, images, available, featured)
+    VALUES (?, ?, ?, ?, ?, ?, 1, ?)
   `);
   for (let i = 1; i <= 10; i++) {
+    const img = `/uploads/img${i}.jpeg`;
     insert.run(
       `Producto ${i}`,
       categories[i - 1],
       35000,
       'Descripción editable desde el panel de administración.',
-      `/uploads/img${i}.jpeg`,
+      img,
+      JSON.stringify([img]),
       i <= 4 ? 1 : 0
     );
   }

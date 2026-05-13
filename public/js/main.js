@@ -37,6 +37,10 @@ waForm.addEventListener('submit', (e) => {
 let allProducts = [];
 let activeCategory = 'Todos';
 
+function imagesOf(p) {
+  return Array.isArray(p.images) && p.images.length ? p.images : [p.image];
+}
+
 async function loadProducts() {
   try {
     const res = await fetch('/api/products');
@@ -63,10 +67,11 @@ function renderCarousel() {
     return;
   }
   slides.forEach((p, i) => {
+    const cover = imagesOf(p)[0];
     const slide = document.createElement('div');
     slide.className = 'car-slide';
     slide.innerHTML = `
-      <img src="${p.image}" alt="${p.name}" loading="lazy" />
+      <img src="${cover}" alt="${p.name}" loading="lazy" />
       <div class="caption">
         <p class="text-xs uppercase tracking-[0.25em] opacity-90">${p.category}</p>
         <h3 class="font-serif text-2xl md:text-4xl mt-1">${p.name}</h3>
@@ -127,14 +132,21 @@ function renderGrid() {
   empty.classList.toggle('hidden', list.length > 0);
   list.forEach(p => {
     const wa = waLink(`Hola, estoy interesad@ en ${p.name}.`);
+    const imgs = imagesOf(p);
+    const cover = imgs[0];
+    const extra = imgs.length - 1;
     const card = document.createElement('article');
     card.className = 'product-card relative bg-white rounded-2xl overflow-hidden shadow-md shadow-blush-200/30 flex flex-col';
     card.innerHTML = `
-      <div class="img-wrap relative aspect-[4/5]">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover" />
+      <button type="button" data-pid="${p.id}" class="img-wrap relative aspect-[4/5] block text-left w-full">
+        <img src="${cover}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover" />
         ${p.available ? '' : '<div class="ribbon">Agotado</div>'}
         ${p.featured ? '<span class="absolute top-3 right-3 bg-blush-400 text-white text-[10px] tracking-widest uppercase px-2.5 py-1 rounded-full shadow">Destacado</span>' : ''}
-      </div>
+        ${extra > 0 ? `<span class="absolute bottom-3 right-3 bg-black/55 backdrop-blur text-white text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          +${extra}
+        </span>` : ''}
+      </button>
       <div class="p-5 flex flex-col flex-1">
         <p class="text-[11px] tracking-[0.2em] uppercase text-blush-500">${p.category}</p>
         <h3 class="font-serif text-xl text-mauve mt-1">${p.name}</h3>
@@ -154,6 +166,70 @@ function renderGrid() {
       </div>`;
     grid.appendChild(card);
   });
+
+  // Click en imagen → lightbox
+  grid.querySelectorAll('[data-pid]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = allProducts.find(x => x.id == btn.dataset.pid);
+      if (p) openLightbox(p);
+    });
+  });
 }
+
+// ----- Lightbox -----
+const lb = {
+  el: document.getElementById('lightbox'),
+  img: document.getElementById('lb-img'),
+  title: document.getElementById('lb-title'),
+  counter: document.getElementById('lb-counter'),
+  thumbs: document.getElementById('lb-thumbs'),
+  wa: document.getElementById('lb-wa'),
+  product: null,
+  index: 0
+};
+
+function openLightbox(p) {
+  lb.product = p;
+  lb.index = 0;
+  lb.el.classList.remove('hidden');
+  lb.el.classList.add('flex');
+  document.body.style.overflow = 'hidden';
+  renderLightbox();
+}
+function closeLightbox() {
+  lb.el.classList.add('hidden');
+  lb.el.classList.remove('flex');
+  document.body.style.overflow = '';
+}
+function renderLightbox() {
+  if (!lb.product) return;
+  const imgs = imagesOf(lb.product);
+  lb.index = ((lb.index % imgs.length) + imgs.length) % imgs.length;
+  lb.img.src = imgs[lb.index];
+  lb.img.alt = lb.product.name;
+  lb.title.textContent = lb.product.name;
+  lb.counter.textContent = `${lb.index + 1} / ${imgs.length} · ${lb.product.category}`;
+  lb.wa.href = waLink(`Hola, estoy interesad@ en ${lb.product.name}.`);
+  lb.thumbs.innerHTML = '';
+  if (imgs.length > 1) {
+    imgs.forEach((src, i) => {
+      const t = document.createElement('button');
+      t.className = `w-14 h-14 rounded-md overflow-hidden ring-2 transition ${i === lb.index ? 'ring-white' : 'ring-transparent opacity-60 hover:opacity-100'}`;
+      t.innerHTML = `<img src="${src}" class="w-full h-full object-cover" />`;
+      t.addEventListener('click', () => { lb.index = i; renderLightbox(); });
+      lb.thumbs.appendChild(t);
+    });
+  }
+}
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('lb-prev').addEventListener('click', () => { lb.index--; renderLightbox(); });
+document.getElementById('lb-next').addEventListener('click', () => { lb.index++; renderLightbox(); });
+lb.el.addEventListener('click', (e) => { if (e.target === lb.el) closeLightbox(); });
+document.addEventListener('keydown', (e) => {
+  if (lb.el.classList.contains('hidden')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') { lb.index--; renderLightbox(); }
+  if (e.key === 'ArrowRight') { lb.index++; renderLightbox(); }
+});
 
 loadProducts();

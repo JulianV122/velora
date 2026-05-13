@@ -58,40 +58,88 @@ app.post('/api/login', (req, res) => {
   res.json({ token, username: user.username });
 });
 
+// Helpers ----------
+const MAX_IMAGES = 10;
+
+function parseImages(row) {
+  let imgs = [];
+  try { imgs = JSON.parse(row.images || '[]'); } catch { imgs = []; }
+  if (!Array.isArray(imgs) || imgs.length === 0) imgs = row.image ? [row.image] : [];
+  return imgs;
+}
+
+function unlinkUpload(relPath) {
+  if (!relPath || !relPath.startsWith('/uploads/prod_')) return;
+  const abs = path.join(uploadsDir, path.basename(relPath));
+  fs.promises.unlink(abs).catch(() => {});
+}
+
+function parseExistingImages(req) {
+  if (!req.body.existing_images) return [];
+  try {
+    const arr = JSON.parse(req.body.existing_images);
+    return Array.isArray(arr) ? arr.filter(s => typeof s === 'string') : [];
+  } catch { return []; }
+}
+
 // ---------- Products (public) ----------
 app.get('/api/products', (req, res) => {
   const rows = db.prepare('SELECT * FROM products ORDER BY featured DESC, id DESC').all();
-  res.json(rows.map(r => ({ ...r, available: !!r.available, featured: !!r.featured })));
+  res.json(rows.map(r => ({
+    ...r,
+    available: !!r.available,
+    featured: !!r.featured,
+    images: parseImages(r)
+  })));
 });
 
 // ---------- Products (admin) ----------
-app.post('/api/products', authRequired, upload.single('image'), (req, res) => {
+app.post('/api/products', authRequired, upload.array('images', MAX_IMAGES), (req, res) => {
   const { name, category, price, description, available, featured } = req.body;
   if (!name || !category || !price) return res.status(400).json({ error: 'name, category y price son requeridos' });
-  const image = req.file ? `/uploads/${req.file.filename}` : (req.body.image || '');
-  if (!image) return res.status(400).json({ error: 'Imagen requerida' });
+
+  const newPaths = (req.files || []).map(f => `/uploads/${f.filename}`);
+  const existing = parseExistingImages(req);
+  const images = [...existing, ...newPaths].slice(0, MAX_IMAGES);
+  if (images.length === 0) return res.status(400).json({ error: 'Al menos una imagen es requerida' });
+
   const info = db.prepare(`
-    INSERT INTO products (name, category, price, description, image, available, featured)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(name, category, parseFloat(price), description || '', image, available === 'false' || available === false ? 0 : 1, featured === 'true' || featured === true ? 1 : 0);
+    INSERT INTO products (name, category, price, description, image, images, available, featured)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    name, category, parseFloat(price), description || '',
+    images[0], JSON.stringify(images),
+    available === 'false' || available === false ? 0 : 1,
+    featured === 'true' || featured === true ? 1 : 0
+  );
   res.json({ id: info.lastInsertRowid });
 });
 
-app.put('/api/products/:id', authRequired, upload.single('image'), (req, res) => {
+app.put('/api/products/:id', authRequired, upload.array('images', MAX_IMAGES), (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
-  if (!existing) return res.status(404).json({ error: 'No encontrado' });
+  const current = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
+  if (!current) return res.status(404).json({ error: 'No encontrado' });
+
   const { name, category, price, description, available, featured } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : existing.image;
+  const newPaths = (req.files || []).map(f => `/uploads/${f.filename}`);
+  const keep = parseExistingImages(req); // imágenes que el admin decidió conservar
+  const images = [...keep, ...newPaths].slice(0, MAX_IMAGES);
+  if (images.length === 0) return res.status(400).json({ error: 'Al menos una imagen es requerida' });
+
+  // Eliminar del disco las imágenes que estaban antes pero el admin quitó
+  const previous = parseImages(current);
+  previous.filter(p => !keep.includes(p)).forEach(unlinkUpload);
+
   db.prepare(`
-    UPDATE products SET name=?, category=?, price=?, description=?, image=?, available=?, featured=?
+    UPDATE products SET name=?, category=?, price=?, description=?, image=?, images=?, available=?, featured=?
     WHERE id=?
   `).run(
-    name ?? existing.name,
-    category ?? existing.category,
-    price !== undefined ? parseFloat(price) : existing.price,
-    description ?? existing.description,
-    image,
+    name ?? current.name,
+    category ?? current.category,
+    price !== undefined ? parseFloat(price) : current.price,
+    description ?? current.description,
+    images[0],
+    JSON.stringify(images),
     available === 'false' || available === false ? 0 : 1,
     featured === 'true' || featured === true ? 1 : 0,
     id
@@ -104,11 +152,7 @@ app.delete('/api/products/:id', authRequired, (req, res) => {
   const prod = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
   if (!prod) return res.status(404).json({ error: 'No encontrado' });
   db.prepare('DELETE FROM products WHERE id = ?').run(id);
-  // Best-effort delete file (only if it lives in /uploads and is a custom upload)
-  if (prod.image && prod.image.startsWith('/uploads/prod_')) {
-    const filePath = path.join(__dirname, 'public', prod.image);
-    fs.promises.unlink(filePath).catch(() => {});
-  }
+  parseImages(prod).forEach(unlinkUpload);
   res.json({ ok: true });
 });
 

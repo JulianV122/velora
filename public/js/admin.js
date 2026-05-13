@@ -116,6 +116,10 @@ function escapeHtml(s) {
 }
 
 // ---------- MODAL ----------
+const MAX_IMAGES = 10;
+let existingImages = []; // URLs ya guardadas en el servidor
+let newFiles = [];       // File objects pendientes de subir
+
 function openModal(p = null) {
   $('modal').classList.remove('hidden');
   $('f-err').classList.add('hidden');
@@ -128,9 +132,41 @@ function openModal(p = null) {
   $('f-available').checked = p ? !!p.available : true;
   $('f-featured').checked = p ? !!p.featured : false;
   $('f-image').value = '';
-  $('f-preview').src = p?.image || '/LogoVelora.jpeg';
+  existingImages = p?.images ? [...p.images] : (p?.image ? [p.image] : []);
+  newFiles = [];
+  renderPreviews();
 }
 function closeModal() { $('modal').classList.add('hidden'); }
+
+function renderPreviews() {
+  const wrap = $('f-previews');
+  wrap.innerHTML = '';
+  const total = existingImages.length + newFiles.length;
+  if (total === 0) {
+    wrap.innerHTML = '<p class="text-xs text-stone-400 italic px-2 py-3">Sin imágenes. Añade al menos una.</p>';
+    return;
+  }
+  existingImages.forEach((url, i) => wrap.appendChild(thumb(url, i, 'existing', i === 0)));
+  newFiles.forEach((file, i) => {
+    const url = URL.createObjectURL(file);
+    wrap.appendChild(thumb(url, i, 'new', existingImages.length === 0 && i === 0));
+  });
+}
+function thumb(url, idx, kind, isCover) {
+  const el = document.createElement('div');
+  el.className = 'relative w-20 h-20 rounded-lg overflow-hidden ring-1 ring-blush-200 group';
+  el.innerHTML = `
+    <img src="${url}" class="w-full h-full object-cover" />
+    ${isCover ? '<span class="absolute bottom-0 inset-x-0 bg-blush-500/90 text-white text-[9px] tracking-widest uppercase text-center py-0.5">Portada</span>' : ''}
+    <button type="button" data-kind="${kind}" data-idx="${idx}" title="Eliminar"
+      class="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 hover:bg-red-600 text-white text-xs leading-none flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition">×</button>`;
+  el.querySelector('button').addEventListener('click', () => {
+    if (kind === 'existing') existingImages.splice(idx, 1);
+    else newFiles.splice(idx, 1);
+    renderPreviews();
+  });
+  return el;
+}
 
 $('btn-new').addEventListener('click', () => openModal(null));
 $('modal-close').addEventListener('click', closeModal);
@@ -138,14 +174,27 @@ $('cancel').addEventListener('click', closeModal);
 $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
 
 $('f-image').addEventListener('change', (e) => {
-  const f = e.target.files?.[0];
-  if (f) $('f-preview').src = URL.createObjectURL(f);
+  const files = Array.from(e.target.files || []);
+  const space = MAX_IMAGES - existingImages.length - newFiles.length;
+  if (space <= 0) {
+    toast(`Máximo ${MAX_IMAGES} imágenes por producto`, true);
+  } else {
+    newFiles.push(...files.slice(0, space));
+    if (files.length > space) toast(`Solo se aceptaron ${space} imágenes (límite ${MAX_IMAGES})`, true);
+  }
+  e.target.value = ''; // permite re-elegir el mismo archivo
+  renderPreviews();
 });
 
 $('prod-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   $('f-err').classList.add('hidden');
   try {
+    if (existingImages.length + newFiles.length === 0) {
+      $('f-err').textContent = 'Añade al menos una imagen.';
+      $('f-err').classList.remove('hidden');
+      return;
+    }
     const id = $('f-id').value;
     const fd = new FormData();
     fd.append('name', $('f-name').value);
@@ -154,13 +203,8 @@ $('prod-form').addEventListener('submit', async (e) => {
     fd.append('description', $('f-description').value);
     fd.append('available', $('f-available').checked);
     fd.append('featured', $('f-featured').checked);
-    const file = $('f-image').files?.[0];
-    if (file) fd.append('image', file);
-    else if (!id) {
-      $('f-err').textContent = 'Selecciona una imagen para el producto.';
-      $('f-err').classList.remove('hidden');
-      return;
-    }
+    fd.append('existing_images', JSON.stringify(existingImages));
+    newFiles.forEach(f => fd.append('images', f));
 
     const url = id ? `/api/products/${id}` : '/api/products';
     const method = id ? 'PUT' : 'POST';
